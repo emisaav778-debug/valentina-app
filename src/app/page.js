@@ -7,7 +7,6 @@ import Image from 'next/image';
 
 export default function Home() {
   const [estaLogueado, setEstaLogueado] = useState(false);
-  const [procesandoPago, setProcesandoPago] = useState(false);
 
   useEffect(() => {
     const chequearSesion = async () => {
@@ -19,42 +18,8 @@ export default function Home() {
     chequearSesion();
   }, []);
 
-  const manejarPago = async (titulo, precio) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
-      alert("Debes iniciar sesión para poder comprar y guardar el contenido.");
-      window.location.href = "/login";
-      return;
-    }
-
-    setProcesandoPago(true);
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}` 
-        },
-        credentials: 'include', 
-        body: JSON.stringify({ title: titulo, price: precio, userId: session.user.id }),
-      });
-
-      const data = await response.json();
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("Error desde el servidor:", data.error);
-        alert(`Hubo un error al procesar el pago: ${data.error}`);
-        setProcesandoPago(false);
-      }
-    } catch (error) {
-      console.error("Error de conexión:", error);
-      alert("Error de conexión con el servidor.");
-      setProcesandoPago(false);
-    }
-  };
+  // 🔥 Se eliminó la función manejarPago y procesandoPago
+  // Ahora Gumroad se encarga de todo el proceso de cobro de forma segura y directa.
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-red-500 selection:text-white">
@@ -66,7 +31,6 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             <div className="flex-shrink-0 flex items-center">
-              {/* 🔥 LOGO CLICABLE PARA VOLVER ARRIBA 🔥 */}
               <Link href="/">
                 <span className="text-2xl font-black tracking-tighter text-white cursor-pointer hover:opacity-80 transition-opacity">
                   VALENTINA<span className="text-red-500">FIT</span>
@@ -218,13 +182,14 @@ export default function Home() {
               <span className="bg-red-900 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider w-max">RETO EXPRESS</span>
               <h3 className="text-xl font-bold mt-4 mb-2">Abdomen Plano en 30 Días</h3>
               <p className="text-gray-400 text-sm mb-6 flex-1">Circuito diario de alta densidad. Diseñado para activar el core y destapar la zona abdominal.</p>
-              <button 
-                onClick={() => manejarPago('Abdomen Plano', 9.99)}
-                disabled={procesandoPago}
-                className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/l/ujmryr" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white text-black text-center font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors block"
               >
-                {procesandoPago ? 'Procesando...' : 'Comprar Reto - $9.99'}
-              </button>
+                Comprar Reto - $4.99
+              </Link>
             </div>
           </div>
 
@@ -236,13 +201,14 @@ export default function Home() {
               <span className="bg-red-900 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider w-max">RETO EXPRESS</span>
               <h3 className="text-xl font-bold mt-4 mb-2">Desafío Tren Inferior</h3>
               <p className="text-gray-400 text-sm mb-6 flex-1">Enfoque masivo en piernas y glúteos. Ideal para aumentar tono muscular de manera rápida.</p>
-              <button 
-                onClick={() => manejarPago('Tren Inferior', 12.99)}
-                disabled={procesandoPago}
-                className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/l/arxqv" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white text-black text-center font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors block"
               >
-                {procesandoPago ? 'Procesando...' : 'Comprar Reto - $12.99'}
-              </button>
+                Comprar Reto - $5.99
+              </Link>
             </div>
           </div>
 
@@ -254,13 +220,14 @@ export default function Home() {
               <span className="bg-red-900 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider w-max">RETO EXPRESS</span>
               <h3 className="text-xl font-bold mt-4 mb-2">Full Body Quema-Grasa</h3>
               <p className="text-gray-400 text-sm mb-6 flex-1">Máximo gasto calórico en sesiones dinámicas. Rutinas híbridas de acondicionamiento metabólico.</p>
-              <button 
-                onClick={() => manejarPago('Full Body Quema-Grasa', 14.99)}
-                disabled={procesandoPago}
-                className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/l/jgwwcc" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white text-black text-center font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors block"
               >
-                {procesandoPago ? 'Procesando...' : 'Comprar Reto - $14.99'}
-              </button>
+                Comprar Reto - $6.99
+              </Link>
             </div>
           </div>
         </div>
@@ -284,13 +251,14 @@ export default function Home() {
               <span className="bg-red-500/20 text-red-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider w-max">Principiante</span>
               <h3 className="text-xl font-bold mt-4 mb-2">Glúteos de Acero (En Casa)</h3>
               <p className="text-gray-400 text-sm mb-6 flex-1">4 semanas de entrenamiento enfocado en tren inferior sin equipamiento.</p>
-              <button 
-                onClick={() => manejarPago('Glúteos de Acero', 14.99)} 
-                disabled={procesandoPago}
-                className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/l/rbrkqv" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white text-black text-center font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors block"
               >
-                {procesandoPago ? 'Procesando...' : 'Comprar PDF - $14.99'}
-              </button>
+                Comprar PDF - $6.99
+              </Link>
             </div>
           </div>
 
@@ -302,13 +270,14 @@ export default function Home() {
               <span className="bg-red-500/20 text-red-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider w-max">Intermedio</span>
               <h3 className="text-xl font-bold mt-4 mb-2">Hipertrofia Total (Gym)</h3>
               <p className="text-gray-400 text-sm mb-6 flex-1">Rutina de 8 semanas para ganar masa muscular con pesas.</p>
-              <button 
-                onClick={() => manejarPago('Hipertrofia Total', 19.99)} 
-                disabled={procesandoPago}
-                className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/l/savcbb" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white text-black text-center font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors block"
               >
-                {procesandoPago ? 'Procesando...' : 'Comprar PDF - $19.99'}
-              </button>
+                Comprar PDF - $8.99
+              </Link>
             </div>
           </div>
 
@@ -320,13 +289,14 @@ export default function Home() {
               <span className="bg-red-500/20 text-red-500 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider w-max">Avanzado</span>
               <h3 className="text-xl font-bold mt-4 mb-2">Quema de Grasa Extrema</h3>
               <p className="text-gray-400 text-sm mb-6 flex-1">Circuito HIIT de alta intensidad para definir al máximo tu cuerpo.</p>
-              <button 
-                onClick={() => manejarPago('Quema de Grasa Extrema', 24.99)} 
-                disabled={procesandoPago}
-                className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/l/qmkewg" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white text-black text-center font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors block"
               >
-                {procesandoPago ? 'Procesando...' : 'Comprar PDF - $24.99'}
-              </button>
+                Comprar PDF - $12.99
+              </Link>
             </div>
           </div>
         </div>
@@ -350,13 +320,14 @@ export default function Home() {
               <span className="bg-gray-800 text-gray-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider w-max">Peso Corporal</span>
               <h3 className="text-xl font-bold mt-4 mb-2">Espartano en Casa</h3>
               <p className="text-gray-400 text-sm mb-6 flex-1">Construye un físico atlético sin pesas. Dominadas, flexiones y core extremo.</p>
-              <button 
-                onClick={() => manejarPago('Espartano en Casa', 14.99)} 
-                disabled={procesandoPago}
-                className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/l/qgopgu" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white text-black text-center font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors block"
               >
-                {procesandoPago ? 'Procesando...' : 'Comprar PDF - $14.99'}
-              </button>
+                Comprar PDF - $4.99
+              </Link>
             </div>
           </div>
 
@@ -368,13 +339,14 @@ export default function Home() {
               <span className="bg-gray-800 text-gray-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider w-max">Hipertrofia</span>
               <h3 className="text-xl font-bold mt-4 mb-2">Volumen Titán (Gym)</h3>
               <p className="text-gray-400 text-sm mb-6 flex-1">Levanta pesado. Programa de 8 semanas para maximizar la ganancia muscular.</p>
-              <button 
-                onClick={() => manejarPago('Volumen Titán', 19.99)} 
-                disabled={procesandoPago}
-                className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/l/cmnvg" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white text-black text-center font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors block"
               >
-                {procesandoPago ? 'Procesando...' : 'Comprar PDF - $19.99'}
-              </button>
+                Comprar PDF - $12.99
+              </Link>
             </div>
           </div>
 
@@ -386,20 +358,21 @@ export default function Home() {
               <span className="bg-gray-800 text-gray-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider w-max">Corte / Six Pack</span>
               <h3 className="text-xl font-bold mt-4 mb-2">Definición Extrema</h3>
               <p className="text-gray-400 text-sm mb-6 flex-1">Destruye la grasa abdominal y revela tus músculos con este híbrido HIIT+Pesas.</p>
-              <button 
-                onClick={() => manejarPago('Definición Extrema', 24.99)} 
-                disabled={procesandoPago}
-                className="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/l/ysvcm" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white text-black text-center font-bold py-3 rounded-lg hover:bg-gray-200 transition-colors block"
               >
-                {procesandoPago ? 'Procesando...' : 'Comprar PDF - $24.99'}
-              </button>
+                Comprar PDF - $13.99
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* ==========================================
-          7. LIBROS / MINDSET (RESTAURADO)
+          7. LIBROS / MINDSET 
           ========================================== */}
       <section id="libros" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-gray-900 relative z-10">
         <div className="flex flex-col md:flex-row items-center gap-12">
@@ -411,19 +384,20 @@ export default function Home() {
             <p className="text-gray-400 text-lg mb-8 leading-relaxed">
               El 70% de tus resultados ocurren en la cocina y en tu mente. Obtén mi recetario oficial con más de 50 comidas altas en proteína y mi guía de disciplina mental para no rendirte nunca.
             </p>
-            <button 
-              onClick={() => manejarPago('E-Book Oficial: Recetario y Mindset', 15.99)} 
-              disabled={procesandoPago}
-              className="bg-transparent border border-white hover:bg-white hover:text-black text-white font-bold py-4 px-8 rounded-full transition-all disabled:opacity-50"
+            <Link 
+              href="https://emisaav.gumroad.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block bg-transparent border border-white hover:bg-white hover:text-black text-white text-center font-bold py-4 px-8 rounded-full transition-all"
             >
-              {procesandoPago ? 'Procesando...' : 'Adquirir E-Book Oficial - $15.99'}
-            </button>
+              Adquirir E-Book Oficial - $15.99
+            </Link>
           </div>
         </div>
       </section>
 
       {/* ==========================================
-          8. GALERÍA VIP (RESTAURADA)
+          8. GALERÍA VIP 
           ========================================== */}
       <section id="vip" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-gray-900 relative z-10">
         <div className="text-center mb-16">
@@ -442,13 +416,14 @@ export default function Home() {
             </div>
             <div className="p-6 text-center border-t border-gray-800 relative z-20 bg-[#0a0a0a] flex-1 flex flex-col justify-end">
               <h3 className="text-xl font-bold mb-4">Pack "Backstage"</h3>
-              <button 
-                onClick={() => manejarPago('Galería VIP: Pack Backstage', 9.99)} 
-                disabled={procesandoPago}
-                className="w-full bg-red-600/90 text-white font-bold py-3 rounded-lg hover:bg-red-600 transition-colors shadow-lg disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-red-600/90 text-white text-center font-bold py-3 rounded-lg hover:bg-red-600 transition-colors shadow-lg block"
               >
-                {procesandoPago ? 'Procesando...' : 'Desbloquear Galería - $9.99'}
-              </button>
+                Desbloquear Galería - $9.99
+              </Link>
             </div>
           </div>
 
@@ -462,13 +437,14 @@ export default function Home() {
             </div>
             <div className="p-6 text-center border-t border-gray-800 relative z-20 bg-[#0a0a0a] flex-1 flex flex-col justify-end">
               <h3 className="text-xl font-bold mb-4">Sesión "Fitness Model"</h3>
-              <button 
-                onClick={() => manejarPago('Galería VIP: Sesión Fitness Model', 14.99)} 
-                disabled={procesandoPago}
-                className="w-full bg-red-600/90 text-white font-bold py-3 rounded-lg hover:bg-red-600 transition-colors shadow-lg disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-red-600/90 text-white text-center font-bold py-3 rounded-lg hover:bg-red-600 transition-colors shadow-lg block"
               >
-                {procesandoPago ? 'Procesando...' : 'Desbloquear Galería - $14.99'}
-              </button>
+                Desbloquear Galería - $14.99
+              </Link>
             </div>
           </div>
 
@@ -482,13 +458,14 @@ export default function Home() {
             </div>
             <div className="p-6 text-center border-t border-gray-800 relative z-20 bg-[#0a0a0a] flex-1 flex flex-col justify-end">
               <h3 className="text-xl font-bold mb-4">Pack VIP "Premium"</h3>
-              <button 
-                onClick={() => manejarPago('Galería VIP: Pack Premium', 19.99)} 
-                disabled={procesandoPago}
-                className="w-full bg-red-600/90 text-white font-bold py-3 rounded-lg hover:bg-red-600 transition-colors shadow-lg disabled:opacity-50"
+              <Link 
+                href="https://emisaav.gumroad.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-red-600/90 text-white text-center font-bold py-3 rounded-lg hover:bg-red-600 transition-colors shadow-lg block"
               >
-                {procesandoPago ? 'Procesando...' : 'Desbloquear Galería - $19.99'}
-              </button>
+                Desbloquear Galería - $19.99
+              </Link>
             </div>
           </div>
         </div>
