@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// 🔥 CONFIGURACIÓN PARA MÓVILES (Evita zoom accidental y define color)
+// 🔥 2. Configuración para Móviles y PWA (Evita zoom accidental y da color a la barra del celu)
 export const viewport = {
   themeColor: "#0a0a0a",
   width: "device-width",
@@ -22,7 +22,7 @@ export const viewport = {
   userScalable: false,
 };
 
-// 🔥 CONFIGURACIÓN DE LA APP (Metadatos y PWA)
+// 🔥 3. Metadatos de la App (Aquí conectamos el manifest.json que creaste)
 export const metadata = {
   title: "Valentina Fit | Forja tu mejor versión",
   description: "Entrena de forma inteligente con nuestra IA o descarga las guías detalladas.",
@@ -36,11 +36,21 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    // 🔥 2. suppressHydrationWarning es obligatorio para que el Modo Oscuro no tire errores al cargar
+    // 🔥 4. suppressHydrationWarning es obligatorio para el Modo Oscuro
     <html lang="es" suppressHydrationWarning>
+      
+      {/* 🔥 CÓDIGO DE GOOGLE ADSENSE (AQUÍ ENTRA EL ROBOT DE GOOGLE) */}
+      <head>
+        <script 
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9215160843913685"
+          crossOrigin="anonymous"
+        ></script>
+      </head>
+
       <body className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col antialiased`}>
         
-        {/* 🔥 3. Envolvemos toda tu aplicación con el ThemeProvider */}
+        {/* 🔥 5. Envolvemos la app con el ThemeProvider */}
         <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
         </ThemeProvider>
