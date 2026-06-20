@@ -11,21 +11,20 @@ import ReactMarkdown from 'react-markdown';
 export default function GeneradorDePlanes() {
   const router = useRouter();
 
-  // ==========================================
-  // 1. ESTADOS DE CONTROL Y SEGURIDAD
-  // ==========================================
   const [autenticado, setAutenticado] = useState(false);
   const [genero, setGenero] = useState('');
   const [edad, setEdad] = useState('');
   const [peso, setPeso] = useState('');
+  
+  // 🔥 NUEVOS ESTADOS AÑADIDOS PARA MEJORAR LA IA
   const [objetivo, setObjetivo] = useState('');
+  const [experiencia, setExperiencia] = useState('');
+  const [equipo, setEquipo] = useState('');
+
   const [rutina, setRutina] = useState('');
   const [loading, setLoading] = useState(false);
   const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
 
-  // ==========================================
-  // 2. VERIFICACIÓN DE SESIÓN DE USUARIO
-  // ==========================================
   useEffect(() => {
     const verificarSesion = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -45,21 +44,23 @@ export default function GeneradorDePlanes() {
     router.push('/login');
   };
 
-  // ==========================================
-  // 3. GENERACIÓN CON INTELIGENCIA ARTIFICIAL
-  // ==========================================
   const generarRutina = async (e) => {
     e.preventDefault();
     setLoading(true);
     setRutina('');
 
     try {
+      // 🔥 TRUCO DE CTO: Juntamos todo en un "Súper-Objetivo" para que tu API actual
+      // no se rompa, pero la IA reciba toda la información detallada para cambiar la rutina.
+      const contextoDetallado = `Objetivo principal: ${objetivo}. Nivel de experiencia: ${experiencia}. Entorno y equipo disponible: ${equipo}. (Instrucción estricta: Adapta los ejercicios, la intensidad, series y descansos radicalmente a este perfil exacto).`;
+
       const response = await fetch('/api/generar-rutina', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ genero, edad, peso, objetivo }),
+        // Enviamos el contexto detallado en lugar del objetivo simple
+        body: JSON.stringify({ genero, edad, peso, objetivo: contextoDetallado }),
       });
 
       const data = await response.json();
@@ -79,7 +80,8 @@ export default function GeneradorDePlanes() {
               genero: genero,
               edad: edad,
               peso: peso,
-              objetivo: objetivo,
+              // Guardamos el objetivo original para no saturar tu base de datos con texto gigante
+              objetivo: objetivo, 
               rutina_texto: planGenerado
             }
           ]);
@@ -143,7 +145,7 @@ export default function GeneradorDePlanes() {
       )}
 
       {/* CONTENIDO PRINCIPAL */}
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         
         {/* Cabecera */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-800 pb-4">
@@ -166,7 +168,10 @@ export default function GeneradorDePlanes() {
         {/* Formulario */}
         <div className="bg-[#111111] border border-gray-800 rounded-xl p-6 shadow-2xl mb-8">
           <form onSubmit={generarRutina} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* GRID AMPLIADO A 3 COLUMNAS EN ESCRITORIO PARA QUE QUEPAN TODOS LOS DATOS */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              
+              {/* FILA 1 */}
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Género</label>
                 <select value={genero} onChange={(e) => setGenero(e.target.value)} className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-red-500 font-medium" required>
@@ -183,15 +188,41 @@ export default function GeneradorDePlanes() {
                 <label className="block text-sm text-gray-400 mb-1">Peso (kg)</label>
                 <input type="number" value={peso} onChange={(e) => setPeso(e.target.value)} className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-red-500 font-medium" required />
               </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-1">Objetivo</label>
-                <select value={objetivo} onChange={(e) => setObjetivo(e.target.value)} className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-red-500 font-medium" required>
-                  <option value="">Selecciona...</option>
-                  <option value="Perder Peso">Perder Peso</option>
-                  <option value="Ganar Masa Muscular">Ganar Masa Muscular</option>
-                  <option value="Mantenimiento">Mantenimiento</option>
+
+              {/* FILA 2: NUEVOS CAMPOS MÁS ESPECÍFICOS */}
+              <div className="md:col-span-1">
+                <label className="block text-sm text-gray-400 mb-1">Nivel de Experiencia</label>
+                <select value={experiencia} onChange={(e) => setExperiencia(e.target.value)} className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-red-500 font-medium" required>
+                  <option value="">Selecciona tu nivel...</option>
+                  <option value="Principiante (Nunca o casi nunca entreno)">Principiante (0-6 meses)</option>
+                  <option value="Intermedio (Entreno regularmente)">Intermedio (6 meses - 2 años)</option>
+                  <option value="Avanzado (Conozco técnicas avanzadas)">Avanzado (+2 años)</option>
                 </select>
               </div>
+
+              <div className="md:col-span-1">
+                <label className="block text-sm text-gray-400 mb-1">Lugar y Equipo</label>
+                <select value={equipo} onChange={(e) => setEquipo(e.target.value)} className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-red-500 font-medium" required>
+                  <option value="">¿Dónde entrenarás?</option>
+                  <option value="En Casa (Sin equipo, solo peso corporal)">Casa (Sin Equipo)</option>
+                  <option value="En Casa (Con mancuernas, bandas o pesas ligeras)">Casa (Con mancuernas/bandas)</option>
+                  <option value="Gimnasio Comercial (Máquinas y pesas libres)">Gimnasio Completo</option>
+                </select>
+              </div>
+
+              <div className="md:col-span-1">
+                <label className="block text-sm text-gray-400 mb-1">Objetivo Específico</label>
+                <select value={objetivo} onChange={(e) => setObjetivo(e.target.value)} className="w-full bg-[#1a1a1a] border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-red-500 font-medium" required>
+                  <option value="">Selecciona tu meta...</option>
+                  <option value="Perder Grasa y Definir (Rutinas metabólicas)">Perder Grasa (Definición)</option>
+                  <option value="Ganar Masa Muscular (Rutinas de Hipertrofia)">Ganar Músculo (Volumen)</option>
+                  <option value="Recomposición Corporal (Perder grasa y ganar músculo a la vez)">Recomposición Corporal</option>
+                  <option value="Ganar Fuerza y Potencia Máxima">Ganar Fuerza</option>
+                  <option value="Aumentar Resistencia Cardiovascular (HIIT y Cardio)">Mejorar Resistencia</option>
+                  <option value="Salud General y Mantenimiento">Salud y Mantenimiento</option>
+                </select>
+              </div>
+
             </div>
 
             <button 
@@ -199,7 +230,7 @@ export default function GeneradorDePlanes() {
               disabled={loading}
               className="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-lg mt-6 disabled:opacity-50 transition-colors shadow-lg tracking-wide text-lg"
             >
-              {loading ? 'Analizando con IA...' : 'Generar Plan Personalizado'}
+              {loading ? 'Entrenador IA Pensando...' : 'Generar Mi Súper Plan Personalizado'}
             </button>
           </form>
         </div>
@@ -234,7 +265,7 @@ export default function GeneradorDePlanes() {
               </div>
             </div>
 
-            {/* Catálogo Visual Dinámico - TAMAÑO h-48 IMPLEMENTADO */}
+            {/* Catálogo Visual Dinámico */}
             {fotosEjercicios.length > 0 && (
               <div className="bg-[#050505] border-t border-gray-800 p-6 md:p-10">
                 <div className="flex items-center justify-between mb-6">
