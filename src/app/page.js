@@ -7,6 +7,7 @@ import Image from 'next/image';
 
 export default function Home() {
   const [estaLogueado, setEstaLogueado] = useState(false);
+  const [procesandoPago, setProcesandoPago] = useState(false);
 
   useEffect(() => {
     const chequearSesion = async () => {
@@ -15,15 +16,38 @@ export default function Home() {
         setEstaLogueado(true);
       }
     };
+    
     chequearSesion();
   }, []);
 
-  // 🔥 Se eliminó la función manejarPago y procesandoPago
-  // Ahora Gumroad se encarga de todo el proceso de cobro de forma segura y directa.
-
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-red-500 selection:text-white relative">
       
+      {/* ==========================================
+          🔥 BANNERS PUBLICITARIOS (LISTOS PARA ADSENSE) 🔥
+          ========================================== */}
+      {/* Banner Izquierdo */}
+      <aside className="hidden 2xl:flex fixed left-8 top-1/2 transform -translate-y-1/2 flex-col items-center justify-center z-40 w-[160px] h-[600px] bg-[#111] border border-gray-800/50 rounded-xl overflow-hidden shadow-lg opacity-50 hover:opacity-100 transition-opacity">
+        <div className="text-center p-4">
+          <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 block">Publicidad</span>
+          {/* Aquí irá el script de Google AdSense */}
+          <div className="w-full h-full flex items-center justify-center text-gray-700 text-xs text-center border border-dashed border-gray-700 rounded-lg p-2">
+            Espacio reservado para Google AdSense (Vertical)
+          </div>
+        </div>
+      </aside>
+
+      {/* Banner Derecho */}
+      <aside className="hidden 2xl:flex fixed right-8 top-1/2 transform -translate-y-1/2 flex-col items-center justify-center z-40 w-[160px] h-[600px] bg-[#111] border border-gray-800/50 rounded-xl overflow-hidden shadow-lg opacity-50 hover:opacity-100 transition-opacity">
+        <div className="text-center p-4">
+          <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2 block">Publicidad</span>
+          {/* Aquí irá el script de Google AdSense */}
+          <div className="w-full h-full flex items-center justify-center text-gray-700 text-xs text-center border border-dashed border-gray-700 rounded-lg p-2">
+            Espacio reservado para Google AdSense (Vertical)
+          </div>
+        </div>
+      </aside>
+
       {/* ==========================================
           1. BARRA DE NAVEGACIÓN
           ========================================== */}
